@@ -52,7 +52,7 @@ jobs:
 
           // ─── CONFIG ────────────────────────────────────────────────────────────────
           const GEMINI_SESSION_RAW = (process.env.GEMINI_SESSION_INPUT?.trim() || process.env.GEMINI_SESSION || '').trim();
-          const TARGET_ACCOUNT     = 'all_two'; // Always scan all DBs automatically
+          const TARGET_ACCOUNT     = 'all_three'; // Always scan all DBs automatically
           const IMAGE_QUEUE_PATH   = (process.env.IMAGE_QUEUE_PATH || 'wallpaperQueue').trim();
           // No count cap — we always process ALL images missing metadata automatically.
 
@@ -184,12 +184,18 @@ jobs:
           // ─── FIREBASE DB ROUTING ──────────────────────────────────────────────────
           const FIREBASE_DB_MAP = {
             zedge_1: 'https://shimul-zedge1-default-rtdb.asia-southeast1.firebasedatabase.app',
-            zedge_2: 'https://shimul-zedge-2-default-rtdb.asia-southeast1.firebasedatabase.app'
+            zedge_2: 'https://shimul-zedge-2-default-rtdb.asia-southeast1.firebasedatabase.app',
+            zedge_3: 'https://shimul-zedge3-default-rtdb.firebaseio.com'
           };
 
           let TARGET_DB_URLS;
-          if (TARGET_ACCOUNT === 'all_two') {
+          if (TARGET_ACCOUNT === 'all_three') {
             TARGET_DB_URLS = Object.entries(FIREBASE_DB_MAP).map(([name, url]) => ({ name, url }));
+          } else if (TARGET_ACCOUNT === 'all_two') {
+            TARGET_DB_URLS = [
+              { name: 'zedge_1', url: FIREBASE_DB_MAP.zedge_1 },
+              { name: 'zedge_2', url: FIREBASE_DB_MAP.zedge_2 }
+            ];
           } else if (FIREBASE_DB_MAP[TARGET_ACCOUNT]) {
             TARGET_DB_URLS = [{ name: TARGET_ACCOUNT, url: FIREBASE_DB_MAP[TARGET_ACCOUNT] }];
           } else {
